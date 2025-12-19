@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zanderkönig 2025</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #eff6ff, #cffafe);
+            min-height: 100vh;
+        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 1rem; }
+        .card { background: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .title { font-size: 1.875rem; font-weight: bold; color: #1f2937; display: flex; align-items: center; gap: 0.75rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+        .btn-primary { background: #06b6d4; color: white; }
+        .btn-primary:hover { background: #0891b2; }
+        .btn-success { background: #16a34a; color: white; }
+        .btn-success:hover { background: #15803d; }
+        .btn-purple { background: #9333ea; color: white; }
+        .btn-purple:hover { background: #7e22ce; }
+        .btn-blue { background: #2563eb; color: white; }
+        .btn-blue:hover { background: #1d4ed8; }
+        .btn-gray { background: #d1d5db; color: #374151; }
+        .btn-gray:hover { background: #9ca3af; }
+        .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .score-card { border-radius: 0.5rem; padding: 1rem; text-align: center; color: white; }
+        .score-holger { background: linear-gradient(to bottom right, #06b6d4, #0891b2); }
+        .score-amine { background: linear-gradient(to bottom right, #a855f7, #9333ea); }
+        .score-number { font-size: 2.25rem; font-weight: bold; margin: 0.25rem 0; }
+        .input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; }
+        .input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6,182,212,0.1); }
+        .label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .stat-box { background: white; padding: 0.75rem; border-radius: 0.5rem; text-align: center; }
+        .stat-number { font-size: 1.5rem; font-weight: bold; color: #06b6d4; }
+        .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+        .catch-item { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.75rem; }
+        .catch-item:hover { background: #f9fafb; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50; }
+        .modal { background: white; border-radius: 0.5rem; max-width: 56rem; width: 100%; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; background: linear-gradient(to right, #06b6d4, #3b82f6); color: white; }
+        .modal-body { flex: 1; overflow-y: auto; padding: 1.5rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid #e5e7eb; background: #f9fafb; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-gray { color: #6b7280; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .flex { display: flex; }
+        .flex-between { justify-content: space-between; }
+        .flex-center { justify-content: center; align-items: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .hidden { display: none; }
+        .img-preview { max-width: 100%; max-height: 8rem; border-radius: 0.5rem; object-fit: contain; }
+        .success-msg { background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; text-align: center; }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="title">
+                    🐟 <span id="yearTitle">Zanderkönig 2025</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-purple" onclick="startNewYear()">➕ Neues Jahr</button>
+                    <button class="btn btn-success" onclick="exportBackup()">⬇️ Backup</button>
+                    <label class="btn btn-blue" style="margin: 0;">
+                        ⬆️ Import
+                        <input type="file" accept=".json" onchange="importBackup(event)" style="display:none;">
+                    </label>
+                </div>
+            </div>
+            <div class="text-sm text-gray mt-3">
+                📁 Letztes Auto-Backup: <span id="lastBackup">Nie</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="mb-4" style="font-size: 1.25rem; font-weight: bold;">🏆 Wettkampf-Stand <span id="yearStand">2025</span></h2>
+            <div class="grid grid-2">
+                <div class="score-card score-holger">
+                    <div class="text-sm" style="opacity: 0.9;">Holger</div>
+                    <div class="score-number" id="scoreHolger">0</div>
+                    <div class="text-xs" style="opacity: 0.9;">Punkte</div>
+                </div>
+                <div class="score-card score-amine">
+                    <div class="text-sm" style="opacity: 0.9;">Amine</div>
+                    <div class="score-number" id="scoreAmine">0</div>
+                    <div class="text-xs" style="opacity: 0.9;">Punkte</div>
+                </div>
+            </div>
+            <div id="standMessage" class="mt-4 text-center" style="font-weight: 600;"></div>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.125rem; margin-bottom: 1.5rem;" onclick="showForm()">
+            ➕ Neuen Fang eintragen
+        </button>
+
+        <div id="formCard" class="card hidden">
+            <h2 class="mb-4" style="font-size: 1.25rem; font-weight: bold;">Neuer Fang</h2>
+            <div class="mb-4">
+                <label class="label">Angler auswählen</label>
+                <div class="btn-group">
+                    <button class="btn" id="btnHolger" onclick="selectAngler('Holger')">Holger</button>
+                    <button class="btn" id="btnAmine" onclick="selectAngler('Amine')">Amine</button>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div>
+                    <label class="label">📅 Datum *</label>
+                    <input type="date" id="inputDatum" class="input">
+                </div>
+                <div>
+                    <label class="label">🕐 Fangzeit</label>
+                    <input type="time" id="inputZeit" class="input">
+                </div>
+                <div>
+                    <label class="label">📍 Ort/Gewässer</label>
+                    <input type="text" id="inputOrt" class="input" list="ortList">
+                    <datalist id="ortList"></datalist>
+                </div>
+                <div>
+                    <label class="label">🐟 Fischart</label>
+                    <select id="inputFischart" class="input">
+                        <option>Zander</option>
+                        <option>Barsch</option>
+                        <option>Hecht</option>
+                        <option>Andere</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">🎣 Köder</label>
+                    <select id="inputKoeder" class="input">
+                        <option value="">-- Köder wählen --</option>
+                        <option>Gummiköder</option>
+                        <option>Wobbler</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">📏 Größe (cm)</label>
+                    <input type="number" step="0.1" id="inputGroesse" class="input" placeholder="z.B. 58">
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <label class="label">📝 Notizen</label>
+                    <textarea id="inputNotizen" class="input" rows="3" placeholder="Wetter, Bedingungen..."></textarea>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <label class="label">📸 Fang-Foto</label>
+                    <input type="file" accept="image/*" id="inputBild" class="input" onchange="previewImage(event)">
+                    <img id="imagePreview" class="img-preview mt-2 hidden">
+                </div>
+            </div>
+            <div class="btn-group mt-4">
+                <button class="btn btn-primary" onclick="saveCatch()">💾 Fang speichern</button>
+                <button class="btn btn-gray" onclick="hideForm()">❌ Abbrechen</button>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h3 class="mb-4" style="font-weight: bold;">Holger</h3>
+                <div id="statsHolger"></div>
+                <h4 class="mt-4 mb-2" style="font-weight: 600;">Letzte 3 Fänge</h4>
+                <div id="catchesHolger"></div>
+            </div>
+            <div class="card">
+                <h3 class="mb-4" style="font-weight: bold;">Amine</h3>
+                <div id="statsAmine"></div>
+                <h4 class="mt-4 mb-2" style="font-weight: 600;">Letzte 3 Fänge</h4>
+                <div id="catchesAmine"></div>
+            </div>
+        </div>
+
+        <div class="success-msg mt-4">
+            ✅ Anwendung läuft! Du kannst jetzt Fänge eintragen.
+        </div>
+    </div>
+
+    <script>
+        let currentYear = 2025;
+        let currentAngler = 'Holger';
+
+        function init() {
+            const savedYear = localStorage.getItem('current_year');
+            if (savedYear) currentYear = parseInt(savedYear);
+            
+            updateDisplay();
+            selectAngler('Holger');
+        }
+
+        function updateDisplay() {
+            document.getElementById('yearTitle').textContent = `Zanderkönig ${currentYear}`;
+            document.getElementById('yearStand').textContent = currentYear;
+            
+            const holgerData = getCatches('Holger');
+            const amineData = getCatches('Amine');
+            
+            const holgerStats = calculateStats(holgerData);
+            const amineStats = calculateStats(amineData);
+            
+            document.getElementById('scoreHolger').textContent = holgerStats.totalPoints;
+            document.getElementById('scoreAmine').textContent = amineStats.totalPoints;
+            
+            updateStandMessage(holgerStats.totalPoints, amineStats.totalPoints);
+            updateStats('Holger', holgerStats);
+            updateStats('Amine', amineStats);
+            updateCatchList('Holger', holgerData);
+            updateCatchList('Amine', amineData);
+            updateLastBackup();
+            updateLocationList();
+        }
+
+        function getCatches(angler) {
+            const data = localStorage.getItem(`catches_${angler}_${currentYear}`);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveCatchesData(angler, catches) {
+            localStorage.setItem(`catches_${angler}_${currentYear}`, JSON.stringify(catches));
+            const backup = {
+                holger: getCatches('Holger'),
+                amine: getCatches('Amine'),
+                year: currentYear,
+                lastBackup: new Date().toISOString()
+            };
+            localStorage.setItem(`auto_backup_${currentYear}`, JSON.stringify(backup));
+        }
+
+        function calculatePoints(size) {
+            if (size < 45) return 0;
+            if (size < 50) return 1;
+            if (size < 60) return 2;
+            if (size < 70) return 3;
+            return 4;
+        }
+
+        function calculateStats(catches) {
+            const stats = {
+                totalPoints: 0,
+                zanderCount: { '<45': 0, '45-49.9': 0, '50-59.9': 0, '60-69.9': 0, '>70': 0 },
+                barschCount: 0
+            };
+            
+            catches.forEach(c => {
+                if (c.fischart === 'Zander' && c.groesse) {
+                    const size = parseFloat(c.groesse);
+                    const points = calculatePoints(size);
+                    stats.totalPoints += points;
+                    
+                    if (size < 45) stats.zanderCount['<45']++;
+                    else if (size < 50) stats.zanderCount['45-49.9']++;
+                    else if (size < 60) stats.zanderCount['50-59.9']++;
+                    else if (size < 70) stats.zanderCount['60-69.9']++;
+                    else stats.zanderCount['>70']++;
+                } else if (c.fischart === 'Barsch') {
+                    stats.barschCount++;
+                }
+            });
+            
+            return stats;
+        }
+
+        function updateStandMessage(holger, amine) {
+            const msg = document.getElementById('standMessage');
+            if (holger === amine && holger > 0) {
+                msg.textContent = '🤝 Gleichstand!';
+                msg.style.color = '#2563eb';
+            } else if (holger > amine) {
+                msg.textContent = `🎉 Holger führt mit ${holger - amine} Punkt${holger - amine !== 1 ? 'en' : ''}!`;
+                msg.style.color = '#16a34a';
+            } else if (amine > holger) {
+                msg.textContent = `🎉 Amine führt mit ${amine - holger} Punkt${amine - holger !== 1 ? 'en' : ''}!`;
+                msg.style.color = '#16a34a';
+            } else {
+                msg.textContent = '';
+            }
+        }
+
+        function updateStats(angler, stats) {
+            const html = `
+                <div class="grid" style="grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+                    <div class="stat-box"><div class="stat-number">${stats.zanderCount['<45']}</div><div class="stat-label">&lt;45cm (0P)</div></div>
+                    <div class="stat-box"><div class="stat-number">${stats.zanderCount['45-49.9']}</div><div class="stat-label">45-49.9cm (1P)</div></div>
+                    <div class="stat-box"><div class="stat-number">${stats.zanderCount['50-59.9']}</div><div class="stat-label">50-59.9cm (2P)</div></div>
+                    <div class="stat-box"><div class="stat-number">${stats.zanderCount['60-69.9']}</div><div class="stat-label">60-69.9cm (3P)</div></div>
+                    <div class="stat-box"><div class="stat-number">${stats.zanderCount['>70']}</div><div class="stat-label">&gt;70cm (4P)</div></div>
+                </div>
+                <div class="grid grid-2">
+                    <div class="stat-box"><div class="stat-number">${stats.barschCount}</div><div class="stat-label">Barsche</div></div>
+                    <div class="stat-box"><div class="stat-number">${getCatches(angler).length}</div><div class="stat-label">Gesamt</div></div>
+                </div>
+            `;
+            document.getElementById(`stats${angler}`).innerHTML = html;
+        }
+
+        function updateCatchList(angler, catches) {
+            const container = document.getElementById(`catches${angler}`);
+            if (catches.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray">Noch keine Fänge eingetragen</p>';
+                return;
+            }
+            
+            const last3 = catches.slice(-3).reverse();
+            let html = '';
+            last3.forEach(c => {
+                html += `
+                    <div class="catch-item">
+                        <div class="flex flex-between">
+                            <div>
+                                <strong>${c.fischart}</strong> ${c.groesse ? c.groesse + ' cm' : ''}
+                                <div class="text-sm text-gray mt-1">
+                                    📅 ${c.tag}, ${new Date(c.datum).toLocaleDateString('de-DE')}
+                                    ${c.fangzeit ? '<br>🕐 ' + c.fangzeit + ' Uhr' : ''}
+                                    ${c.ort ? '<br>📍 ' + c.ort : ''}
+                                    ${c.koeder ? '<br>🎣 ' + c.koeder : ''}
+                                </div>
+                            </div>
+                            <button class="btn btn-gray" style="padding: 0.25rem 0.5rem;" onclick="deleteCatch('${angler}', ${c.id})">🗑️</button>
+                        </div>
+                        ${c.bild ? `<img src="${c.bild}" class="img-preview mt-2">` : ''}
+                    </div>
+                `;
+            });
+            
+            if (catches.length > 3) {
+                html += `<button class="btn btn-gray" style="width: 100%; margin-top: 0.5rem;" onclick="showAllCatches('${angler}')">Alle ${catches.length} Fänge anzeigen →</button>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function updateLastBackup() {
+            const backup = localStorage.getItem(`auto_backup_${currentYear}`);
+            if (backup) {
+                const data = JSON.parse(backup);
+                document.getElementById('lastBackup').textContent = new Date(data.lastBackup).toLocaleString('de-DE');
+            }
+        }
+
+        function updateLocationList() {
+            const allCatches = [...getCatches('Holger'), ...getCatches('Amine')];
+            const locations = [...new Set(allCatches.map(c => c.ort).filter(Boolean))].sort();
+            const datalist = document.getElementById('ortList');
+            datalist.innerHTML = locations.map(loc => `<option value="${loc}">`).join('');
+        }
+
+        function selectAngler(angler) {
+            currentAngler = angler;
+            document.getElementById('btnHolger').className = angler === 'Holger' ? 'btn btn-primary' : 'btn btn-gray';
+            document.getElementById('btnAmine').className = angler === 'Amine' ? 'btn btn-purple' : 'btn btn-gray';
+        }
+
+        function showForm() {
+            document.getElementById('formCard').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('formCard').offsetTop - 20, behavior: 'smooth' });
+        }
+
+        function hideForm() {
+            document.getElementById('formCard').classList.add('hidden');
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById('inputDatum').value = '';
+            document.getElementById('inputZeit').value = '';
+            document.getElementById('inputOrt').value = '';
+            document.getElementById('inputFischart').value = 'Zander';
+            document.getElementById('inputKoeder').value = '';
+            document.getElementById('inputGroesse').value = '';
+            document.getElementById('inputNotizen').value = '';
+            document.getElementById('inputBild').value = '';
+            document.getElementById('imagePreview').classList.add('hidden');
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Bild ist zu groß! Maximum 5MB.');
+                    event.target.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function getDayOfWeek(dateStr) {
+            const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+            const date = new Date(dateStr);
+            return days[date.getDay()];
+        }
+
+        function saveCatch() {
+            const datum = document.getElementById('inputDatum').value;
+            if (!datum) {
+                alert('Bitte gib mindestens ein Datum ein!');
+                return;
+            }
+            
+            const catches = getCatches(currentAngler);
+            const newCatch = {
+                id: Date.now(),
+                datum: datum,
+                tag: getDayOfWeek(datum),
+                fangzeit: document.getElementById('inputZeit').value,
+                ort: document.getElementById('inputOrt').value,
+                fischart: document.getElementById('inputFischart').value,
+                koeder: document.getElementById('inputKoeder').value,
+                groesse: document.getElementById('inputGroesse').value,
+                notizen: document.getElementById('inputNotizen').value,
+                bild: document.getElementById('imagePreview').src || null
+            };
+            
+            catches.push(newCatch);
+            saveCatchesData(currentAngler, catches);
+            updateDisplay();
+            hideForm();
+            alert('Fang erfolgreich gespeichert!');
+        }
+
+        function deleteCatch(angler, id) {
+            if (confirm('Möchtest du diesen Fang wirklich löschen?')) {
+                const catches = getCatches(angler).filter(c => c.id !== id);
+                saveCatchesData(angler, catches);
+                updateDisplay();
+            }
+        }
+
+        function exportBackup() {
+            const backup = {
+                holger: getCatches('Holger'),
+                amine: getCatches('Amine'),
+                year: currentYear,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            const dataStr = JSON.stringify(backup, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `zanderkoenig_${currentYear}_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        if (imported.holger && imported.amine) {
+                            const importYear = imported.year || currentYear;
+                            localStorage.setItem(`catches_Holger_${importYear}`, JSON.stringify(imported.holger));
+                            localStorage.setItem(`catches_Amine_${importYear}`, JSON.stringify(imported.amine));
+                            if (imported.year && imported.year !== currentYear) {
+                                currentYear = importYear;
+                                localStorage.setItem('current_year', currentYear.toString());
+                            }
+                            updateDisplay();
+                            alert(`Backup für ${importYear} erfolgreich wiederhergestellt!`);
+                        } else {
+                            alert('Fehler: Ungültiges Backup-Format');
+                        }
+                    } catch (error) {
+                        alert('Fehler beim Importieren der Daten');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function startNewYear() {
+            const newYear = currentYear + 1;
+            if (confirm(`Möchtest du Zanderkönig ${newYear} starten?\n\nDie Daten von ${currentYear} bleiben erhalten und du kannst jederzeit zurückwechseln.`)) {
+                currentYear = newYear;
+                localStorage.setItem('current_year', currentYear.toString());
+                updateDisplay();
+            }
+        }
+
+        function showAllCatches(angler) {
+            const catches = getCatches(angler);
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 style="font-size: 1.5rem; font-weight: bold; margin: 0;">Alle Fänge von ${angler}</h2>
+                        <div class="text-sm" style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 0.25rem; margin-top: 0.5rem;">
+                            ESC zum Schließen
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        ${catches.length === 0 ? '<p class="text-center text-gray">Noch keine Fänge eingetragen</p>' : catches.slice().reverse().map(c => `
+                            <div class="catch-item">
+                                <div class="flex flex-between">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; font-size: 1.125rem; color: #0891b2; margin-bottom: 0.5rem;">
+                                            ${c.fischart} ${c.groesse ? c.groesse + ' cm' : ''}
+                                        </div>
+                                        <div class="text-sm text-gray">
+                                            📅 ${c.tag}, ${new Date(c.datum + 'T00:00:00').toLocaleDateString('de-DE')}<br>
+                                            ${c.fangzeit ? '🕐 ' + c.fangzeit + ' Uhr<br>' : ''}
+                                            ${c.ort ? '📍 ' + c.ort + '<br>' : ''}
+                                            ${c.koeder ? '🎣 Köder: ' + c.koeder + '<br>' : ''}
+                                            ${c.notizen ? '<div class="mt-2" style="font-style: italic;">' + c.notizen + '</div>' : ''}
+                                        </div>
+                                        ${c.bild ? '<img src="' + c.bild + '" style="max-width: 100%; max-height: 12rem; margin-top: 0.75rem; border-radius: 0.5rem; object-fit: contain; cursor: pointer;" onclick="window.open(\'' + c.bild + '\', \'_blank\')" title="Klicken zum Vergrößern">' : ''}
+                                    </div>
+                                    <button class="btn btn-gray" style="padding: 0.5rem;" onclick="deleteFromOverlay('${angler}', ${c.id}, this)">🗑️</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="closeOverlay()">Schließen</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // ESC-Taste zum Schließen
+            const handleEsc = (e) => {
+                if (e.key === 'Escape') {
+                    closeOverlay();
+                }
+            };
+            document.addEventListener('keydown', handleEsc);
+            overlay.dataset.escHandler = 'attached';
+            
+            // Klick außerhalb schließt das Overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeOverlay();
+                }
+            });
+        }
+
+        function closeOverlay() {
+            const overlay = document.querySelector('.overlay');
+            if (overlay) {
+                overlay.remove();
+                updateDisplay();
+            }
+        }
+
+        function deleteFromOverlay(angler, id, button) {
+            if (confirm('Möchtest du diesen Fang wirklich löschen?')) {
+                const catches = getCatches(angler).filter(c => c.id !== id);
+                saveCatchesData(angler, catches);
+                
+                // Entferne das Element aus der Ansicht
+                const catchItem = button.closest('.catch-item');
+                if (catchItem) {
+                    catchItem.remove();
+                }
+                
+                // Wenn keine Fänge mehr, schließe Overlay
+                if (catches.length === 0) {
+                    closeOverlay();
+                }
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
